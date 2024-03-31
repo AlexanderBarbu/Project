@@ -14,7 +14,7 @@ public class Client {
     private BufferedReader in = null;
     private PrintWriter out = null;
 
-    protected void onReceiveMessage(String data) {}
+    protected void onReceiveMessage(Message msg) {}
     protected void onDisconnectedFromServer() {}
     protected void onConnectedToServer() {}
     protected void onConnectionFailed() {}
@@ -67,9 +67,9 @@ public class Client {
      * 
      * @param data
      */
-    public void sendToServer(String data) {
+    public void sendToServer(Message message) {
         if (out != null) {
-            out.println(data);
+            out.println(message.toString());
         }
     }
 
@@ -81,9 +81,10 @@ public class Client {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             try {
-                String message;
+                String data;
                 while (true) {
-                    while ((message = in.readLine()) != null) {
+                    while ((data = in.readLine()) != null) {
+                        Message message = new Message(data);
                         onReceiveMessage(message);
                     }
                 }
@@ -101,7 +102,7 @@ public class Client {
     public void disconnect() {
         if (socket != null) {
             try {
-                sendToServer("req disc");
+                sendToServer(new Message(0, Message.REQUEST_DISCONNECT, null));
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();

@@ -12,7 +12,7 @@ public class Server {
      * @param sender The client that sent the message
      * @param data The data that was received
      */
-    protected void onReceiveMessage(Socket sender, String data) {}
+    protected void onReceiveMessage(Socket sender, Message message) {}
 
     /**
      * Called when a client disconnects
@@ -76,10 +76,11 @@ public class Server {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             try {
                 while (true) {
-                    String message;
-                    while ((message = in.readLine()) != null) {
+                    String data;
+                    while ((data = in.readLine()) != null) {
+                        Message message = new Message(data);
                         onReceiveMessage(socket, message);
-                        if (message.equals("req disc")) {
+                        if (message.getFunctionId() == Message.REQUEST_DISCONNECT) {
                             throw new IOException();
                         }
                     }
@@ -99,8 +100,8 @@ public class Server {
      * @param clientIndex Zero indexed
      * @param data
      */
-    public void send(int clientIndex, String data) {
-        router.send(clientIndex, data);
+    public void send(int clientIndex, Message message) {
+        router.send(clientIndex, message);
     }
 
     /**
@@ -109,8 +110,8 @@ public class Server {
      * @param target Target socket
      * @param data
      */
-    public void send(Socket target, String data) {
-        router.send(target, data);
+    public void send(Socket target, Message message) {
+        router.send(target, message);
     }
 
     /**
@@ -118,8 +119,8 @@ public class Server {
      * 
      * @param data Message
      */
-    public void broadcast(String data) {
-        router.broadcast(data);
+    public void broadcast(Message message) {
+        router.broadcast(message);
     }
 
     /**

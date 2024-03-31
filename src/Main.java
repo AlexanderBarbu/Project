@@ -1,6 +1,20 @@
 import java.net.*;
 
-class Master extends Server {
+class TestServer extends Server {
+
+    @Override
+    protected void onReceiveMessage(Socket socket, Message message) {
+        System.out.println("Server received: " + message.toString());
+    }
+
+}
+
+class TestClient extends Client {
+
+    @Override
+    protected void onReceiveMessage(Message message) {
+        System.out.println("Client received: " + message.toString());
+    }
 
 }
 
@@ -8,22 +22,17 @@ class Test
 {
     public static void main(String args[])
     {
-        Master master = new Master();
-        master.start(NetUtil.getMasterPort());
+        TestServer server = new TestServer();
+        server.start(1394);
 
-        Worker worker1 = new Worker(0);
-        Worker worker2 = new Worker(1);                
-
-        worker2.followWorker(worker1);
-    
-        worker1.scheduleDeath(3000);
-        worker2.scheduleDeath(7000);
+        TestClient client = new TestClient();
+        client.connect(NetUtil.getServerIp(), 1394, Client.WaitMode.WAIT_UNTIL_CONNECTS);
 
         while (true) {
-            System.out.println("Sending message");
-            master.send(0, "hello");
-
-            try { Thread.sleep(2000); } catch (InterruptedException ie) {}
+            client.sendToServer(new Message(0, 1, "Hello from client!"));
+            try { Thread.sleep(1000); } catch (InterruptedException ie) { }
+            server.broadcast(new Message(2, 3, null));
+            try { Thread.sleep(1000); } catch (InterruptedException ie) { }
         }
     }
 }

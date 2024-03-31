@@ -12,8 +12,8 @@ public class Hybrid {
      */
     private class HybridClient extends Client {
         @Override
-        public void onReceiveMessage(String data) {
-            Hybrid.this.onReceiveMessageFromServer(data);
+        public void onReceiveMessage(Message msg) {
+            Hybrid.this.onReceiveMessageFromServer(msg);
         }
 
         @Override
@@ -38,8 +38,8 @@ public class Hybrid {
      */
     private class HybridServer extends Server {
         @Override
-        protected void onReceiveMessage(Socket sender, String data) {
-            Hybrid.this.onReceiveMessageFromClient(sender, data);
+        protected void onReceiveMessage(Socket sender, Message msg) {
+            Hybrid.this.onReceiveMessageFromClient(sender, msg);
         }
 
         @Override
@@ -72,27 +72,27 @@ public class Hybrid {
         client.connect(ip, port, Client.WaitMode.WAIT_UNTIL_CONNECTS);
     }
 
-    public void sendToClient(Socket socket, String data) {
+    public void sendToClient(Socket socket, Message message) {
         if (server != null) {
-            server.send(socket, data);
+            server.send(socket, message);
         }       
     }
 
-    public void sendToClient(int clientIndex, String data) {
+    public void sendToClient(int clientIndex, Message message) {
         if (server != null) {
-            server.send(clientIndex, data);
+            server.send(clientIndex, message);
         }
     }
 
-    public void sendToServer(String data) {
+    public void sendToServer(Message message) {
         if (client != null) {
-            client.sendToServer(data);
+            client.sendToServer(message);
         }
     }
 
-    public void broadcast(String data) {
+    public void broadcast(Message message) {
         if (server != null) {
-            server.broadcast(data);
+            server.broadcast(message);
         }
     }
 
@@ -102,8 +102,8 @@ public class Hybrid {
         }
     }
 
-    protected void onReceiveMessageFromServer(String data) {}
-    protected void onReceiveMessageFromClient(Socket socket, String data) {}
+    protected void onReceiveMessageFromServer(Message msg) {}
+    protected void onReceiveMessageFromClient(Socket socket, Message msg) {}
 
     protected void onClientDisconnected(Socket socket) {}
     protected void onClientConnected(Socket socket) {}

@@ -9,8 +9,8 @@ public class Worker extends Hybrid {
     private class WorkerClient extends Client {
 
         @Override
-        protected void onReceiveMessage(String data) {
-            Worker.this.processMessageFromServer(getPort(), data);
+        protected void onReceiveMessage(Message message) {
+            Worker.this.processMessageFromServer(getPort(), message);
         }
 
     }
@@ -66,12 +66,12 @@ public class Worker extends Hybrid {
         }
     }
 
-    private void processMessageFromServer(int port, String data) {
-        System.out.println("[From port " + Integer.toString(port) + "] " + data);
+    private void processMessageFromServer(int port, Message message) {
+        System.out.println("[From port " + Integer.toString(port) + "] " + message.getParams());
     }
 
-    private void sendToFollowers(String data) {
-        broadcast(data);
+    private void sendToFollowers(Message message) {
+        broadcast(message);
     }
 
     /**
@@ -80,8 +80,8 @@ public class Worker extends Hybrid {
      * @param data Data to be sent
      */
     @Override
-    protected void onReceiveMessageFromServer(String data) {
-        processMessageFromServer(NetUtil.getMasterPort(), data);
+    protected void onReceiveMessageFromServer(Message message) {
+        processMessageFromServer(NetUtil.getMasterPort(), message);
     }
 
     /**
@@ -90,11 +90,11 @@ public class Worker extends Hybrid {
      * @param port Port of the server, identifying the destination server
      * @param data Data to be sent
      */
-    private void sendToServer(int port, String data) {
+    private void sendToServer(int port, Message message) {
         if (port == NetUtil.getMasterPort()) {
-            sendToServer(data);
+            sendToServer(message);
         } else if (clients.containsKey(port)) {
-            clients.get(port).sendToServer(data);
+            clients.get(port).sendToServer(message);
         }
     }
 

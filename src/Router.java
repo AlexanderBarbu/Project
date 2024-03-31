@@ -86,9 +86,9 @@ public class Router {
      * that would be sent to the dead ones
      * @param data
      */
-    public void broadcast(String data) {
+    public void broadcast(Message message) {
         for (Socket linkedSocket : linkedSockets) {
-            send(linkedSocket, data);
+            send(linkedSocket, message);
         }
     }
 
@@ -115,8 +115,8 @@ public class Router {
      * @param index Index of socket in the group
      * @param data Data to be transmitted
      */
-    public void send(int index, String data) {
-        if (index < 0 || index >= linkedSockets.size() || data == null) {
+    public void send(int index, Message message) {
+        if (index < 0 || index >= linkedSockets.size() || message == null) {
             return;
         }
         Socket socketAtIndex = linkedSockets.get(index);
@@ -129,7 +129,7 @@ public class Router {
         if (targetSocket != null) {
             try {
                 PrintWriter out = new PrintWriter(targetSocket.getOutputStream(), true);
-                out.println(data);
+                out.println(message.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -142,8 +142,8 @@ public class Router {
      * @param socket
      * @param data
      */
-    public void send(Socket socket, String data) {
-        send(getSocketIndex(socket), data);
+    public void send(Socket socket, Message message) {
+        send(getSocketIndex(socket), message);
     }
 
     /**
