@@ -26,6 +26,15 @@ import java.security.InvalidParameterException;
 public class Message {   
 
     public static final int REQUEST_DISCONNECT = 0;
+    public static final int REQUEST_LOGIN = 1;
+    public static final int REQUEST_REGISTRATION = 2;
+    public static final int LOGIN_REJECTED = 3;
+    public static final int LOGIN_ACCEPTED = 4;
+    public static final int REGISTRATION_ACCEPTED = 5;
+    public static final int REGISTRATION_REJECTED = 6;
+    public static final int INVALID_PARAMS = 7;
+    public static final int INVALID_TOKEN = 8;
+    public static final int PING = 9;
 
     public static final int INVALID_ID = -1;
     
@@ -75,7 +84,7 @@ public class Message {
         return functionId;
     }
 
-    public String getParams() {
-        return params;
+    public String[] getParams() {
+        return params.split("\\|");
     }
 }

@@ -1,19 +1,46 @@
-import java.net.*;
+import java.util.Scanner;
 
-class TestServer extends Server {
+class AppClientTest extends Client {
 
-    @Override
-    protected void onReceiveMessage(Socket socket, Message message) {
-        System.out.println("Server received: " + message.toString());
+    private String username = null;
+
+    public AppClientTest(String username, String password) {
+        this.username = username;
+
+        System.out.println("Connecting...");
+        connect(NetUtil.getServerIp(), NetUtil.getMasterAppPort(), WaitMode.WAIT_UNTIL_CONNECTS);
+
+        System.out.println("Requesting login...");
+
+        MessageBuilder mb = new MessageBuilder();
+        mb.setFunctionID(Message.REQUEST_LOGIN);
+        mb.addParam(username);
+        mb.addParam(StringHasher.Hash(password));
+        sendToServer(mb.get());
     }
-
-}
-
-class TestClient extends Client {
 
     @Override
     protected void onReceiveMessage(Message message) {
-        System.out.println("Client received: " + message.toString());
+        switch (message.getFunctionId()) {
+            case Message.LOGIN_ACCEPTED:
+                System.out.println("Login success, pinging...");
+                String authToken = message.getParams()[0];
+
+                MessageBuilder mb = new MessageBuilder();
+                mb.setFunctionID(Message.PING);
+                mb.addParam(username);
+                mb.addParam(authToken);
+                sendToServer(mb.get());
+                break;
+
+            case Message.LOGIN_REJECTED:
+                System.out.println("Login failed: " + message.getParams()[0]);
+                break;
+
+            case Message.PING:
+                System.out.println("Server says: " + message.getParams()[0]);
+                break;
+        }
     }
 
 }
@@ -22,17 +49,20 @@ class Test
 {
     public static void main(String args[])
     {
-        TestServer server = new TestServer();
-        server.start(1394);
+        Master master = new Master();
 
-        TestClient client = new TestClient();
-        client.connect(NetUtil.getServerIp(), 1394, Client.WaitMode.WAIT_UNTIL_CONNECTS);
+        Scanner scanner = new Scanner(System.in);
 
-        while (true) {
-            client.sendToServer(new Message(0, 1, "Hello from client!"));
-            try { Thread.sleep(1000); } catch (InterruptedException ie) { }
-            server.broadcast(new Message(2, 3, null));
-            try { Thread.sleep(1000); } catch (InterruptedException ie) { }
-        }
+        System.out.print("Username: ");
+        String username = scanner.nextLine();
+
+        System.out.print("Password: ");
+        String password = scanner.nextLine();
+
+        scanner.close();
+
+        AppClientTest appClientTest = new AppClientTest(username, password);
+
+        while (true) {}
     }
 }

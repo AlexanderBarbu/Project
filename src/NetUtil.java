@@ -6,14 +6,18 @@ public class NetUtil {
 
     public static int portToId(int port) {
         return port - 5000;
+    }    
+
+    public static int getMasterAppPort() {
+        return 4500;
     }
 
-    public static int getMasterPort() {
-        return 4999;
+    public static int getMasterWorkerPort() {
+        return 4600;
     }
 
     public static int getReducerPort() {
-        return 4998;
+        return 4700;
     }
 
     public static String getServerIp() {

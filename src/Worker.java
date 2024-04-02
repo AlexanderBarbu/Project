@@ -34,7 +34,7 @@ public class Worker extends Hybrid {
     public Worker(int id) {
         this.id = id;
         startServer(NetUtil.idToPort(id));
-        connectToServer(NetUtil.getServerIp(), NetUtil.getMasterPort());
+        connectToServer(NetUtil.getServerIp(), NetUtil.getMasterWorkerPort());
     }
 
     public int getId() {
@@ -81,7 +81,7 @@ public class Worker extends Hybrid {
      */
     @Override
     protected void onReceiveMessageFromServer(Message message) {
-        processMessageFromServer(NetUtil.getMasterPort(), message);
+        processMessageFromServer(NetUtil.getMasterWorkerPort(), message);
     }
 
     /**
@@ -91,7 +91,7 @@ public class Worker extends Hybrid {
      * @param data Data to be sent
      */
     private void sendToServer(int port, Message message) {
-        if (port == NetUtil.getMasterPort()) {
+        if (port == NetUtil.getMasterWorkerPort()) {
             sendToServer(message);
         } else if (clients.containsKey(port)) {
             clients.get(port).sendToServer(message);
