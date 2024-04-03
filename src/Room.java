@@ -25,4 +25,13 @@ public class Room {
         IsFull = false;
     }
 
+//----------------GETTERS------------------------------------
+
+    public int capacity() { return _capacity;  }
+    public int areaID()   { return _areaID;    }
+    public int managerID(){ return _managerID; }
+
+//----------------SETTERS------------------------------------ 
+
+    public void setCapacity(int cap) { _capacity = cap;}
 }// Room
