@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public interface UserDAO{
 
-    User find(String ID);
+    user find(String ID);
 
     void save(user User);
 

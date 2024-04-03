@@ -1,7 +1,7 @@
 
 public interface HotelDAO{
 
-    Hotel find(Name);
+    Hotel find(String Name);
 
     void save(Hotel hotel);
 
