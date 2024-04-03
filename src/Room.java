@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.Attributes.Name;
@@ -39,5 +41,26 @@ public class Room {
 //----------------SETTERS------------------------------------ 
 
     public void setCapacity(int cap) { _capacity = cap;}
+
+//----------------------------------------------------------- 
+
+    public boolean checkAvailability(LocalDateTime start, LocalDateTime end){
+        int startday = start.getDayOfMonth();
+        int startmonth = start.getMonthValue();
+        int endday = end.getDayOfMonth();
+        int endmonth = end.getMonthValue();
+
+        for(int j = startmonth; j<= endmonth; startmonth++){
+            for (int i=startday; i <= endday; i++){
+                
+                if(availabilityPreview[j][i]){
+                    return false;
+                }
+                //Complexity is O(n^2 on paper but on worst case if endmonth > startmonth which is unlikely)
+            }
+        }//for 1
+
+        return true;
+    }
     
 }// Room

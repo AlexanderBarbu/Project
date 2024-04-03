@@ -1,4 +1,6 @@
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Hotel {
@@ -36,6 +38,22 @@ public class Hotel {
 
     public Map<String, Room> getRooms(){
         return _rooms;
+    }
+
+    public Room getAvailableRoom(int capacity , LocalDateTime startdate, LocalDateTime enddate){
+
+        for(Room room : _rooms.values()){
+            if(room.capacity() >= capacity){
+                continue;
+            }
+            if(room.checkAvailability(startdate, enddate)){
+                IsFull = false;
+                return room;
+            }
+        }
+
+        IsFull = true;
+        return null;
     }
 //-----------------------------------------------------------
     
