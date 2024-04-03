@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.Attributes.Name;
 
 public class Room {
@@ -7,6 +9,9 @@ public class Room {
     public int Rating;
     public int NoReviews;
     public boolean IsFull;
+
+    protected List<Reservation> reservations = new ArrayList<>(); // all reservations of this room
+    protected boolean[][] availabilityPreview = new boolean[12][31]; // the idea we talked about the other day
 
     private int _capacity;
     private String _areaID;

@@ -11,6 +11,7 @@ public class user {
 
     private String _managerID = "-1";
     private Map<String, Reservation> _reservations = new HashMap<>();
+    private Map<String, Hotel> _hotels = new HashMap<>();
 
     public String managerID(){ return _managerID; } //Getter
 

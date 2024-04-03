@@ -14,6 +14,7 @@ public class Hotel {
     private String _managerID;
 
     private Map<String, Room> _rooms = new HashMap<>();
+    
 
     public Hotel(String Name, int R, int NR, String Aid, String MID) {
         this.Name       = Name;

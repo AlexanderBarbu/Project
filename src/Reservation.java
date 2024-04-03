@@ -5,6 +5,8 @@ public class Reservation {
 
     public String ReservationID;
 
+    public user User; // the user that MADE the reservation
+
     public LocalDateTime StartDate;
     public LocalDateTime EndDate;
 
