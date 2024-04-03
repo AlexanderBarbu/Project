@@ -37,6 +37,7 @@ public class Room {
     public int capacity() { return _capacity;  }
     public String areaID()   { return _areaID;    }
     public String managerID(){ return _managerID; }
+    public List<Reservation> getreservations() { return reservations;}
 
 //----------------SETTERS------------------------------------ 
 
@@ -52,7 +53,7 @@ public class Room {
 
         for(int j = startmonth; j<= endmonth; startmonth++){
             for (int i=startday; i <= endday; i++){
-                
+
                 if(availabilityPreview[j][i]){
                     return false;
                 }
@@ -61,6 +62,16 @@ public class Room {
         }//for 1
 
         return true;
+    }
+
+    public void addReservation(Reservation r){
+
+        if(reservations.contains(r)){
+            return;
+        }else{
+            reservations.add(r);
+        }
+        
     }
     
 }// Room

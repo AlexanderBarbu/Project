@@ -21,4 +21,8 @@ public class user {
 
 
     //------------------------CUSTOMEER METHODS----------------------------------------
+
+    public void makeReservation(){
+        
+    }
 }
