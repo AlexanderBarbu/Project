@@ -9,11 +9,11 @@ public class Room {
     public boolean IsFull;
 
     private int _capacity;
-    private int _areaID;
+    private String _areaID;
     private String _imgPath;
-    private int _managerID;
+    private String _managerID;
 
-    public Room(String Name, int R, int NR, int Cap, int Aid, String path, int MID) {
+    public Room(String Name, int R, int NR, int Cap, String Aid, String path, String MID) {
 
         this.Name       = Name;
         this.Rating     = R;
@@ -28,8 +28,8 @@ public class Room {
 //----------------GETTERS------------------------------------
 
     public int capacity() { return _capacity;  }
-    public int areaID()   { return _areaID;    }
-    public int managerID(){ return _managerID; }
+    public String areaID()   { return _areaID;    }
+    public String managerID(){ return _managerID; }
 
 //----------------SETTERS------------------------------------ 
 

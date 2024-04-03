@@ -3,12 +3,12 @@ import java.time.LocalDateTime;
 
 public class Reservation {
 
-    public int ReservationID;
+    public String ReservationID;
 
     public LocalDateTime StartDate;
     public LocalDateTime EndDate;
 
-    public Reservation(int ID, LocalDateTime s, LocalDateTime e) {
+    public Reservation(String ID, LocalDateTime s, LocalDateTime e) {
         this.ReservationID = ID;
         this.StartDate = s;
         this.EndDate = e;

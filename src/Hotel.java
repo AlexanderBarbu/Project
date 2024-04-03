@@ -10,12 +10,12 @@ public class Hotel {
     public boolean IsFull;
 
     private int _noRooms;
-    private int _areaID;
-    private int _managerID;
+    private String _areaID;
+    private String _managerID;
 
     private Map<String, Room> _rooms = new HashMap<>();
 
-    public Hotel(String Name, int R, int NR, int Aid, int MID) {
+    public Hotel(String Name, int R, int NR, String Aid, String MID) {
         this.Name       = Name;
         this.Rating     = R;
         this.NoReviews  = NR;
@@ -26,8 +26,8 @@ public class Hotel {
 
 //----------------GETTERS------------------------------------
 
-    public int areaID()   { return _areaID;      }
-    public int managerID(){ return _managerID;   }
+    public String areaID()   { return _areaID;      }
+    public String managerID(){ return _managerID;   }
     public int noRooms()  { 
         _noRooms = _rooms.size();
         return _noRooms;
