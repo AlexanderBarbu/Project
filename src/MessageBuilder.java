@@ -7,6 +7,11 @@ public class MessageBuilder {
     private StringBuilder sb = new StringBuilder();
     private int functionId = Message.PING;
     private int requestId = -1;
+    private MessageCallback callback = null;
+
+    public void setCallback(MessageCallback callback) {
+        this.callback = callback;
+    }
 
     public void addParam(String param) {
         if (param != null) {
@@ -16,11 +21,15 @@ public class MessageBuilder {
     }
 
     public Message get() {
-        return new Message(
+        Message message = new Message(
             requestId == -1 ? generateRequestId() : requestId,
             functionId,
             sb.toString()
         );
+        if (callback != null) {
+            message.setCallback(callback);
+        }
+        return message;
     }
 
     public void setRequestId(int reqId) {

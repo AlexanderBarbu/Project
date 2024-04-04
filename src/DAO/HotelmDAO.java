@@ -9,8 +9,8 @@ public class HotelmDAO implements HotelDAO{
     @Override
     public Hotel find(String Name){
 
-        for(Hotel current : hotels){
-            if(current.Name == Name){
+        for(Hotel current : hotels) {
+            if(current.Name.equals(Name)) {
                 return current;
             }
         }

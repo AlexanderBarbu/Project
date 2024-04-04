@@ -41,6 +41,7 @@ public class Message {
     private int requestId = INVALID_ID;
     private int functionId = INVALID_ID;
     private String params = "";
+    private MessageCallback callback = null;
 
     public Message(String data) {
         extractMembersFromData(data);
@@ -74,6 +75,14 @@ public class Message {
     @Override
     public String toString() {
         return String.format("%d|%d|%s", requestId, functionId, params);
+    }
+
+    public void setCallback(MessageCallback callback) {
+        this.callback = callback;
+    }
+
+    public MessageCallback getCallback() {
+        return this.callback;
     }
 
     public int getRequestId() {

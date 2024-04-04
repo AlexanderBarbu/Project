@@ -1,10 +1,13 @@
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class Server {
     
     private ServerSocket serverSocket = null;
     private Router router = null;
+
+    private HashMap<Integer, MessageCallback> callback = new HashMap<>();
 
     /**
      * Called when a message arrives

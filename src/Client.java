@@ -1,4 +1,5 @@
 import java.net.*;
+import java.util.HashMap;
 import java.io.*;
 
 public class Client {
@@ -14,7 +15,17 @@ public class Client {
     private BufferedReader in = null;
     private PrintWriter out = null;
 
-    protected void onReceiveMessage(Message msg) {}
+    private HashMap<Integer, MessageCallback> callback = new HashMap<>();
+
+    protected void onReceiveMessage(Message msg) {
+        int requestId = msg.getRequestId();
+        if (callback.containsKey(requestId)) {
+            MessageCallback mcb = callback.get(requestId);
+            callback.remove(requestId);
+            mcb.callback(socket, msg);
+        }
+    }
+
     protected void onDisconnectedFromServer() {}
     protected void onConnectedToServer() {}
     protected void onConnectionFailed() {}
@@ -69,6 +80,10 @@ public class Client {
      */
     public void sendToServer(Message message) {
         if (out != null) {
+            MessageCallback callback = message.getCallback();
+            if (callback != null) {
+                this.callback.put(message.getRequestId(), callback);
+            }
             out.println(message.toString());
         }
     }

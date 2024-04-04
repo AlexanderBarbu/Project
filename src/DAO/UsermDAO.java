@@ -4,10 +4,10 @@ public class UsermDAO implements UserDAO{
     protected static ArrayList<User> users = new ArrayList<>();
 
     @Override
-    public User find(String ID){
+    public User find(String ID) {
 
-        for(User current : users){
-            if(current.UID == ID){
+        for(User current : users) {
+            if(current.UID.equals(ID)) {
                 return current;
             }
         }
@@ -16,17 +16,17 @@ public class UsermDAO implements UserDAO{
     }
 
     @Override
-    public void save(User user){
+    public void save(User user) {
         users.add(user);
     }
 
     @Override
-    public void delete(User User){
+    public void delete(User User) {
         users.remove(User);
     }
     
     @Override
-    public ArrayList<User> findAll(){
+    public ArrayList<User> findAll() {
         return users;
     }
 }

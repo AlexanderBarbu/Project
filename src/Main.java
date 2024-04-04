@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.net.*;
 
 class AppClientTest extends Client {
 
@@ -16,31 +17,29 @@ class AppClientTest extends Client {
         mb.setFunctionID(Message.REQUEST_LOGIN);
         mb.addParam(username);
         mb.addParam(StringHasher.Hash(password));
-        sendToServer(mb.get());
-    }
 
-    @Override
-    protected void onReceiveMessage(Message message) {
-        switch (message.getFunctionId()) {
-            case Message.LOGIN_ACCEPTED:
+        mb.setCallback((Socket socket, Message response) -> {
+            int functionid = response.getFunctionId();
+            if (functionid == Message.LOGIN_ACCEPTED) {
                 System.out.println("Login success, pinging...");
-                String authToken = message.getParams()[0];
+                String authToken = response.getParams()[0];
 
-                MessageBuilder mb = new MessageBuilder();
-                mb.setFunctionID(Message.PING);
-                mb.addParam(username);
-                mb.addParam(authToken);
-                sendToServer(mb.get());
-                break;
+                MessageBuilder builder = new MessageBuilder();
+                builder.setFunctionID(Message.PING);
+                builder.addParam(username);
+                builder.addParam(authToken);
+                builder.setCallback((s, r) -> {
+                    if (r.getFunctionId() == Message.PING) {
+                        System.out.println("Server says: " + r.getParams()[0]);
+                    }
+                });
+                sendToServer(builder.get());
+            } else if (functionid == Message.LOGIN_REJECTED) {
+                System.out.println("Login failed: " + response.getParams()[0]);
+            }
+        });
 
-            case Message.LOGIN_REJECTED:
-                System.out.println("Login failed: " + message.getParams()[0]);
-                break;
-
-            case Message.PING:
-                System.out.println("Server says: " + message.getParams()[0]);
-                break;
-        }
+        sendToServer(mb.get());
     }
 
 }
