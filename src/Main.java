@@ -48,6 +48,15 @@ class Test
 {
     public static void main(String args[])
     {
+        Hotel hotel = new Hotel("MyHotel", 5, 100, "1234", "3214");
+        System.out.println(hotel.toString());
+        Hotel hotelReplica = new Hotel(hotel.toString());
+        System.out.println(hotelReplica.Name);
+        System.out.println(hotelReplica.areaID());
+        System.out.println(hotelReplica.NoReviews);
+        System.out.println(hotelReplica.Rating);
+        System.out.println(hotelReplica.IsFull);
+
         Master master = new Master();
 
         Scanner scanner = new Scanner(System.in);

@@ -86,5 +86,9 @@ public class Master {
     public Master() {
         clientServer.start(NetUtil.getMasterAppPort());
         workerServer.start(NetUtil.getMasterWorkerPort());
+
+        for (int i = 0; i < 5; ++i) {
+            
+        }
     }
 }

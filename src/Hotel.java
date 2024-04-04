@@ -1,6 +1,6 @@
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class Hotel {
@@ -12,7 +12,7 @@ public class Hotel {
     public boolean IsFull;
 
     private int _noRooms;
-    private String _areaID;
+    public String _areaID;
     private String _managerID;
 
     private Map<String, Room> _rooms = new HashMap<>();
@@ -25,6 +25,36 @@ public class Hotel {
         this._areaID    = Aid;
         this._managerID = MID;
         IsFull = false;
+    }
+
+    // When passing hotel data through messages, the string will
+    // be something like 'name=Hotel;rating=3;areaID=342' etc
+    // so we want to be able to initialize a hotel object using this string.
+    // This is basically the inverse of .toString()
+    public Hotel(String data) {
+        String[] params = data.split(";");
+        for (String entry : params) {
+            String[] parts = entry.split("=");
+            String attributeName = parts[0];
+            String attributeValue = parts[1];
+            switch (attributeName.toLowerCase()) {
+                case "name":
+                    this.Name = attributeValue;
+                    break;
+                case "rating":
+                    this.Rating = Integer.parseInt(attributeValue);
+                    break;
+                case "noreviews":
+                    this.NoReviews = Integer.parseInt(attributeValue);
+                    break;
+                case "full":
+                    this.IsFull = (attributeValue.toLowerCase() == "true");
+                    break;
+                case "area":
+                    this._areaID = attributeValue;
+                    break;
+            }
+        }
     }
 
 //----------------GETTERS------------------------------------
@@ -59,6 +89,23 @@ public class Hotel {
     
     public void addRoom(Room room){
         _rooms.put(room.Name, room);
+    }
+
+    @Override
+    public String toString() {
+        HashMap<String, String> members = new HashMap<>();
+        members.put("name",      this.Name);
+        members.put("area",      this._areaID);
+        members.put("noreviews", Integer.toString(this.NoReviews));
+        members.put("rating",    Integer.toString(this.Rating));
+        members.put("full",      this.IsFull ? "true" : "false");
+
+        StringBuilder sb = new StringBuilder();
+        for (String key : members.keySet()) {
+            sb.append(key + "=" + members.get(key) + ";");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
     }
 
 }//Hotel
