@@ -29,7 +29,7 @@ public class HotelmDAO implements HotelDAO{
     }
     
     @Override
-    public ArrayList<user> findAll(){
+    public ArrayList<Hotel> findAll(){
         return hotels;
     }
 

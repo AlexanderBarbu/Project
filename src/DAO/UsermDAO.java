@@ -1,12 +1,12 @@
 import java.util.ArrayList;
 
 public class UsermDAO implements UserDAO{
-    protected static ArrayList<user> users = new ArrayList<>();
+    protected static ArrayList<User> users = new ArrayList<>();
 
     @Override
-    public user find(String ID){
+    public User find(String ID){
 
-        for(user current : users){
+        for(User current : users){
             if(current.UID == ID){
                 return current;
             }
@@ -16,17 +16,17 @@ public class UsermDAO implements UserDAO{
     }
 
     @Override
-    public void save(user User){
-        users.add(User);
+    public void save(User user){
+        users.add(user);
     }
 
     @Override
-    public void delete(user User){
+    public void delete(User User){
         users.remove(User);
     }
     
     @Override
-    public ArrayList<user> findAll(){
+    public ArrayList<User> findAll(){
         return users;
     }
 }

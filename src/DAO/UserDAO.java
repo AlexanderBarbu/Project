@@ -1,12 +1,12 @@
 import java.util.ArrayList;
 
-public interface UserDAO{
+public interface UserDAO {
 
-    user find(String ID);
+    User find(String ID);
 
-    void save(user User);
+    void save(User user);
 
-    void delete(user User);
+    void delete(User user);
 
-    ArrayList<user> findAll();
+    ArrayList<User> findAll();
 }

@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
-public class user {
+public class User {
     
     public String UID;
     
