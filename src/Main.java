@@ -1,5 +1,16 @@
 import java.util.Scanner;
+
+import Model.Hotel;
+import Network.Client;
+import Network.Message;
+import Network.MessageBuilder;
+import Network.NetUtil;
+import Utility.StringHasher;
+import Utility.DateRange;
+import java.util.*;
+
 import java.net.*;
+import java.time.LocalDateTime;
 
 class AppClientTest extends Client {
 
@@ -56,6 +67,28 @@ class Test
         System.out.println(hotelReplica.NoReviews);
         System.out.println(hotelReplica.Rating);
         System.out.println(hotelReplica.IsFull);
+        System.out.println();
+
+        HotelFilter filter = new HotelFilter();
+        filter.addArea("area1");
+        filter.addArea("area2");
+        filter.addDateRange(LocalDateTime.now(), LocalDateTime.now().plusDays(10));
+        filter.addDateRange(LocalDateTime.now().plusDays(20), LocalDateTime.now().plusDays(30));
+        filter.setNumberOfPeople(5);
+        filter.setPriceRange(100, 1000);
+        filter.setStars(3);
+        System.out.println(filter.toString());
+
+        HotelFilter filterReplica = new HotelFilter(filter.toString());
+        for (String area : filterReplica.getAreas()) {
+            System.out.print(area + " ");
+        }
+        for (DateRange dates : filterReplica.getDates()) {
+            System.out.println(dates.getFrom() + " to " + dates.getTo() + " ");
+        }
+        System.out.println(filter.getNumberOfPeople());
+        System.out.println(filter.getPriceRange().getFrom() + " to " + filter.getPriceRange().getTo());
+        System.out.println(filter.getStars());
 
         Master master = new Master();
 

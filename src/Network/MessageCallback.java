@@ -1,3 +1,4 @@
+package Network;
 import java.net.*;
 
 public interface MessageCallback {

@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import Model.User;
+
 public class UsermDAO implements UserDAO{
     protected static ArrayList<User> users = new ArrayList<>();
 

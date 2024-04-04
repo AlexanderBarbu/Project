@@ -1,3 +1,5 @@
+package Model;
+
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
 import java.util.HashMap;

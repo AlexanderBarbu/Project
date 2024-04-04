@@ -1,4 +1,10 @@
 import java.util.*;
+
+import Network.Client;
+import Network.Hybrid;
+import Network.Message;
+import Network.NetUtil;
+
 import java.net.*;
 
 public class Worker extends Hybrid {

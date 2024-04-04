@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 
+import Model.Hotel;
 
-
-public class HotelmDAO implements HotelDAO{
+public class HotelmDAO implements HotelDAO {
     
     protected static ArrayList<Hotel> hotels = new ArrayList<>();
 

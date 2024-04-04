@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import Model.User;
+
 public interface UserDAO {
 
     User find(String ID);

@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import Model.Hotel;
+
 public interface HotelDAO{
 
     Hotel find(String Name);

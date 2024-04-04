@@ -1,4 +1,7 @@
 import java.util.*;
+
+import Utility.StringHasher;
+
 import java.time.LocalDateTime;
 
 public class Authenticator {

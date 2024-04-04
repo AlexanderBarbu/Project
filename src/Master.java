@@ -1,5 +1,9 @@
 import java.net.*;
 
+import Network.Message;
+import Network.NetUtil;
+import Network.Server;
+
 public class Master {
 
     private class ClientServer extends Server {
