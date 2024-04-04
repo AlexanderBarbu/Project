@@ -6,6 +6,16 @@ public class Master {
 
         @Override
         protected void onReceiveMessage(Socket socket, Message message) {
+            super.onReceiveMessage(socket, message);
+            // If the callback is not null after returning from
+            // super.onReceiveMessage, then the message was a response
+            // to one of the server's messages
+            if (message.getCallback() == null) {
+                handleInitialMessage(socket, message);
+            }
+        }
+
+        private void handleInitialMessage(Socket socket, Message message) {
             final int funcId = message.getFunctionId();
             if (funcId == Message.REQUEST_LOGIN) {
                 handleLoginRequest(socket, message);
@@ -45,6 +55,16 @@ public class Master {
                         Message.LOGIN_ACCEPTED,
                         authToken
                     );
+                    loginSuccessMsg.setCallback((s, m) -> {
+                        if (m.getFunctionId() == Message.PING) {
+                            Message pingMsg = new Message(
+                                m.getRequestId(),
+                                Message.PING,
+                                null
+                            );
+                            send(s, pingMsg);
+                        }
+                    });
                     send(socket, loginSuccessMsg);
                 }
             }

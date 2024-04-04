@@ -10,12 +10,25 @@ public class Server {
     private HashMap<Integer, MessageCallback> callback = new HashMap<>();
 
     /**
-     * Called when a message arrives
+     * Called when a message arrives. If the message was a response
+     * to a client's message, then upon returning from this function
+     * then message.getCallback() will not be null.
      * 
      * @param sender The client that sent the message
      * @param data The data that was received
      */
-    protected void onReceiveMessage(Socket sender, Message message) {}
+    protected void onReceiveMessage(Socket sender, Message message) {
+        int requestId = message.getRequestId();
+        if (callback.containsKey(requestId)) {
+            MessageCallback mcb = callback.get(requestId);
+            message.setCallback(mcb);
+            // WARNING: If we get multiple responses from
+            // a broadcasted message, only the first response
+            // will trigger the callback. Implement a solution if needed
+            callback.remove(requestId);
+            mcb.callback(sender, message);
+        }
+    }
 
     /**
      * Called when a client disconnects
@@ -104,6 +117,7 @@ public class Server {
      * @param data
      */
     public void send(int clientIndex, Message message) {
+        saveCallback(message);
         router.send(clientIndex, message);
     }
 
@@ -114,6 +128,7 @@ public class Server {
      * @param data
      */
     public void send(Socket target, Message message) {
+        saveCallback(message);
         router.send(target, message);
     }
 
@@ -123,6 +138,7 @@ public class Server {
      * @param data Message
      */
     public void broadcast(Message message) {
+        saveCallback(message);
         router.broadcast(message);
     }
 
@@ -131,6 +147,13 @@ public class Server {
      */
     public int getNumberOfConnections() {
         return router.getNumberOfLinks();
+    }
+
+    private void saveCallback(Message message) {
+        MessageCallback mcb = message.getCallback();
+        if (mcb != null) {
+            callback.put(message.getRequestId(), mcb);
+        }
     }
 
     protected Router GetRouter() {

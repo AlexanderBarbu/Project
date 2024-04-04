@@ -12,11 +12,6 @@ public class Hybrid {
      */
     private class HybridClient extends Client {
         @Override
-        public void onReceiveMessage(Message msg) {
-            Hybrid.this.onReceiveMessageFromServer(msg);
-        }
-
-        @Override
         public void onConnectedToServer() {
             Hybrid.this.onConnectedToServer();
         }
@@ -37,11 +32,6 @@ public class Hybrid {
      * matching Hybrid's callback functions
      */
     private class HybridServer extends Server {
-        @Override
-        protected void onReceiveMessage(Socket sender, Message msg) {
-            Hybrid.this.onReceiveMessageFromClient(sender, msg);
-        }
-
         @Override
         protected void onClientDisconnected(Socket sender) {
             Hybrid.this.onClientDisconnected(sender);

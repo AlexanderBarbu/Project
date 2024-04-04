@@ -17,7 +17,7 @@ public class Client {
 
     private HashMap<Integer, MessageCallback> callback = new HashMap<>();
 
-    protected void onReceiveMessage(Message msg) {
+    protected final void onReceiveMessage(Message msg) {
         int requestId = msg.getRequestId();
         if (callback.containsKey(requestId)) {
             MessageCallback mcb = callback.get(requestId);

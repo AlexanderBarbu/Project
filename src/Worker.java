@@ -8,11 +8,6 @@ public class Worker extends Hybrid {
      */
     private class WorkerClient extends Client {
 
-        @Override
-        protected void onReceiveMessage(Message message) {
-            Worker.this.processMessageFromServer(getPort(), message);
-        }
-
     }
 
     private int id;
