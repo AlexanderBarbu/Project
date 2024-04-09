@@ -26,6 +26,14 @@ public class Hybrid {
         protected void onDisconnectedFromServer() {
             Hybrid.this.onDisconnectedFromServer();
         }
+
+        @Override
+        protected void onReceiveMessage(Message message) {
+            super.onReceiveMessage(message);
+            if (message.getCallback() == null) {
+                Hybrid.this.onReceiveMessageFromServer(message);
+            }
+        }
     }
 
     /**
@@ -41,6 +49,14 @@ public class Hybrid {
         @Override
         protected void onClientConnected(Socket sender) {
             Hybrid.this.onClientConnected(sender);
+        }
+
+        @Override
+        protected void onReceiveMessage(Socket socket, Message message) {
+            super.onReceiveMessage(socket, message);
+            if (message.getCallback() == null) {
+                Hybrid.this.onReceiveMessageFromClient(socket, message);
+            }
         }
     }
 

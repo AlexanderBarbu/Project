@@ -1,22 +1,25 @@
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 import Network.Client;
 import Network.Hybrid;
 import Network.Message;
+import Network.MessageBuilder;
 import Network.NetUtil;
+import Network.Client.WaitMode;
 
-import java.net.*;
+import Utility.Logger;
 
 public class Worker extends Hybrid {
 
     /**
      * 
      */
-    private class WorkerClient extends Client {
-
-    }
+    private class WorkerClient extends Client {}
+    private class ReducerClient extends Client {}
 
     private int id;
+    private ReducerClient reducerClient = new ReducerClient();
 
     /**
      * We want to connect to multiple leaders
@@ -32,10 +35,20 @@ public class Worker extends Hybrid {
      */
     private HashMap<Integer, Object> workerData = new HashMap<>();
 
+    private Logger logger = null;
+
     public Worker(int id) {
+        logger = new Logger("Worker " + id);
         this.id = id;
+        logger.write("Starting server...");
         startServer(NetUtil.idToPort(id));
+        logger.write("Server started");
+        logger.write("Connecting to master...");
         connectToServer(NetUtil.getServerIp(), NetUtil.getMasterWorkerPort());
+        logger.write("Connected to master");
+        logger.write("Connecting to reducer");
+        reducerClient.connect(NetUtil.getServerIp(), NetUtil.getReducerPort(), WaitMode.WAIT_UNTIL_CONNECTS);
+        logger.write("Connected to reducer");
     }
 
     public int getId() {
@@ -68,7 +81,19 @@ public class Worker extends Hybrid {
     }
 
     private void processMessageFromServer(int port, Message message) {
-        System.out.println("[From port " + Integer.toString(port) + "] " + message.getParams());
+        switch (message.getFunctionId()) {
+            case Message.TEST_REDUCTION:
+                logger.write("Processing");
+                MessageBuilder mb = new MessageBuilder();
+                mb.setFunctionID(message.getFunctionId());
+                mb.setRequestId(message.getRequestId());
+                for (int i = 1; i <= 5; ++i) {
+                    mb.addParam("area" + i + ":" + ThreadLocalRandom.current().nextInt(0, 100));
+                }
+                logger.write("Sending response to reducer");
+                reducerClient.sendToServer(mb.get());
+                break;
+        }
     }
 
     private void sendToFollowers(Message message) {
@@ -82,6 +107,7 @@ public class Worker extends Hybrid {
      */
     @Override
     protected void onReceiveMessageFromServer(Message message) {
+        logger.write("Received message from master");
         processMessageFromServer(NetUtil.getMasterWorkerPort(), message);
     }
 

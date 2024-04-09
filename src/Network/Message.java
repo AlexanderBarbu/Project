@@ -36,6 +36,9 @@ public class Message {
     public static final int INVALID_PARAMS = 7;
     public static final int INVALID_TOKEN = 8;
     public static final int PING = 9;
+    public static final int INIT_REDUCTION = 10;
+    public static final int READY_FOR_REDUCTION = 11;
+    public static final int TEST_REDUCTION = 12;
 
     public static final int INVALID_ID = -1;
     

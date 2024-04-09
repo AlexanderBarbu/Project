@@ -1,14 +1,16 @@
 package Network;
+
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
     
     private ServerSocket serverSocket = null;
     private Router router = null;
 
-    private HashMap<Integer, MessageCallback> callback = new HashMap<>();
+    private Map<Integer, MessageCallback> callback = new ConcurrentHashMap<>();
 
     /**
      * Called when a message arrives. If the message was a response
@@ -150,7 +152,7 @@ public class Server {
         return router.getNumberOfLinks();
     }
 
-    private void saveCallback(Message message) {
+    public void saveCallback(Message message) {
         MessageCallback mcb = message.getCallback();
         if (mcb != null) {
             callback.put(message.getRequestId(), mcb);

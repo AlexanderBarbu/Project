@@ -47,7 +47,7 @@ public class MessageBuilder {
         functionId = funcId;
     }
 
-    private synchronized int generateRequestId() {
+    public synchronized int generateRequestId() {
         return ++global_req_id;
     }
 }

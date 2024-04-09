@@ -21,6 +21,10 @@ public class NetUtil {
         return 4700;
     }
 
+    public static int getMasterReducerPort() {
+        return 4800;
+    }
+
     public static String getServerIp() {
         return "127.0.0.1";
     }

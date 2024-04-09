@@ -3,6 +3,7 @@ package Network;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Intermediate stage for sending messages to sockets.
@@ -30,7 +31,7 @@ public class Router {
 
     }
 
-    private HashMap<Socket, Boolean> isConnected = new HashMap<>();
+    private Map<Socket, Boolean> isConnected = new ConcurrentHashMap<>();
     private List<Socket> linkedSockets = new ArrayList<>();
     private IRoutingPolicy routingPolicy = new DefaultRoutingPolicy();
 
