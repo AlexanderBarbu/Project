@@ -83,7 +83,7 @@ public class Worker extends Hybrid {
     private void processMessageFromServer(int port, Message message) {
         switch (message.getFunctionId()) {
             case Message.TEST_REDUCTION:
-                logger.write("Processing");
+                logger.write("Processing for " + message.getParams()[0]);
                 MessageBuilder mb = new MessageBuilder();
                 mb.setFunctionID(message.getFunctionId());
                 mb.setRequestId(message.getRequestId());

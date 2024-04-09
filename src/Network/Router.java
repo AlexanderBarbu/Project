@@ -90,9 +90,22 @@ public class Router {
      * @param data
      */
     public void broadcast(Message message) {
-        for (Socket linkedSocket : linkedSockets) {
-            send(linkedSocket, message);
+        for (int i = 0; i < linkedSockets.size(); ++i) {
+            send(linkedSockets.get(i), createMessageWithId(message, i));
         }
+    }
+
+    private Message createMessageWithId(Message message, int id) {
+        MessageBuilder mb = new MessageBuilder();
+        mb.setFunctionID(message.getFunctionId());
+        mb.setRequestId(message.getRequestId());
+        mb.addParam(Integer.toString(id));
+
+        for (String param : message.getParams()) {
+            mb.addParam(param);
+        }
+
+        return mb.get();
     }
 
     /**

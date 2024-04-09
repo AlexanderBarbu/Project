@@ -16,6 +16,9 @@ class Test
         logger.write("Creating workers...");
         for (int i = 0; i < 5; ++i) {
             Worker worker = new Worker(i);
+            if (i == 0) {
+                worker.scheduleDeath(10);
+            }
         }
     }
 
