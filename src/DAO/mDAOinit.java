@@ -1,3 +1,8 @@
+package DAO;
+
+import DAO.HotelmDAO;
+import DAO.UsermDAO;
+
 public class mDAOinit {
     
     private UsermDAO UserDAO;
@@ -15,5 +20,11 @@ public class mDAOinit {
         UserDAO = new UsermDAO();
         // INIT!!!!!!!! NOT READY
         return UserDAO;
+    }
+
+    public HotelmDAO getInitHotelmDAO(){
+        HotelDAO = new HotelmDAO();
+        // INIT!!!!!!!!!!! NOT READY
+        return HotelDAO;
     }
 }
