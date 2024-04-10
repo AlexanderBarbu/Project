@@ -1,8 +1,6 @@
+package Utility;
 import java.time.LocalDateTime;
 import java.util.*;
-
-import Utility.DateRange;
-import Utility.PriceRange;
 
 public class HotelFilter {
 

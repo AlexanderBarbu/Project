@@ -1,6 +1,11 @@
 import Utility.Logger;
 
-import java.util.Scanner;;
+import java.util.Scanner;
+
+import Components.AppClient;
+import Components.Master;
+import Components.Reducer;
+import Components.Worker;
 
 class Test
 {

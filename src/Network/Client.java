@@ -5,6 +5,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.io.*;
 
+import Utility.Logger;
+
 public class Client {
 
     public enum WaitMode {
@@ -87,6 +89,8 @@ public class Client {
             if (callback != null) {
                 this.callback.put(message.getRequestId(), callback);
             }
+            Logger logger = new Logger("Client");
+            logger.write(message.toString());
             out.println(message.toString());
         }
     }

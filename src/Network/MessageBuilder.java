@@ -1,9 +1,10 @@
 package Network;
 import java.security.InvalidParameterException;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MessageBuilder {
 
-    private static int global_req_id = 0;
+    private static int global_req_id = ThreadLocalRandom.current().nextInt(0, 1073741824);
 
     private StringBuilder sb = new StringBuilder();
     private int functionId = Message.PING;

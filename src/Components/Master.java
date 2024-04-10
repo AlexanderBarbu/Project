@@ -1,5 +1,7 @@
+package Components;
 import java.net.*;
 
+import Authentication.Authenticator;
 import Network.Message;
 import Network.MessageBuilder;
 import Network.NetUtil;
@@ -171,6 +173,6 @@ public class Master {
      */
     private void returnMapReduceResults(Socket client, Message response) {
         logger.write("Returning data to client");
-        clientServer.send(0, response);
+        clientServer.send(client, response);
     }
 }

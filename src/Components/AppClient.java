@@ -1,3 +1,5 @@
+package Components;
+
 import Network.Client;
 import Network.NetUtil;
 import Network.MessageBuilder;
@@ -6,7 +8,7 @@ import Utility.Logger;
 
 import java.net.*;
 
-class AppClient extends Client {
+public class AppClient extends Client {
 
     private String username = null;
     private String authToken = null;
@@ -17,6 +19,12 @@ class AppClient extends Client {
         logger.write("Connecting to Master...");
         connect(NetUtil.getServerIp(), NetUtil.getMasterAppPort(), WaitMode.WAIT_UNTIL_CONNECTS);
         logger.write("Connected to Master");
+    }
+
+    @Override
+    protected void onReceiveMessage(Message message) {
+        logger.write("FuncID=" + message.getFunctionId() + ",ReqID=" + message.getRequestId() + ",Params=" + String.join(";", message.getParams()));
+        super.onReceiveMessage(message);
     }
 
     public boolean login(String username, String password) {

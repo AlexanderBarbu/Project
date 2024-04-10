@@ -1,5 +1,7 @@
 package Network;
 
+import Utility.Logger;
+
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -121,6 +123,8 @@ public class Server {
      */
     public void send(int clientIndex, Message message) {
         saveCallback(message);
+        Logger logger = new Logger("Server");
+        logger.write("Sending " + message.toString());
         router.send(clientIndex, message);
     }
 
@@ -132,6 +136,8 @@ public class Server {
      */
     public void send(Socket target, Message message) {
         saveCallback(message);
+        Logger logger = new Logger("Server");
+        logger.write("Sending " + message.toString());
         router.send(target, message);
     }
 
