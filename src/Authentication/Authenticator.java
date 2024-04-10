@@ -1,3 +1,4 @@
+package Authentication;
 import java.util.*;
 
 import Utility.StringHasher;

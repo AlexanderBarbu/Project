@@ -1,8 +1,11 @@
 package Network;
 
 import java.net.*;
-import java.util.HashMap;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.io.*;
+
+import Utility.Logger;
 
 public class Client {
 
@@ -17,9 +20,9 @@ public class Client {
     private BufferedReader in = null;
     private PrintWriter out = null;
 
-    private HashMap<Integer, MessageCallback> callback = new HashMap<>();
+    private Map<Integer, MessageCallback> callback = new ConcurrentHashMap<>();
 
-    protected final void onReceiveMessage(Message msg) {
+    protected void onReceiveMessage(Message msg) {
         int requestId = msg.getRequestId();
         if (callback.containsKey(requestId)) {
             MessageCallback mcb = callback.get(requestId);
@@ -86,6 +89,8 @@ public class Client {
             if (callback != null) {
                 this.callback.put(message.getRequestId(), callback);
             }
+            Logger logger = new Logger("Client");
+            logger.write(message.toString());
             out.println(message.toString());
         }
     }

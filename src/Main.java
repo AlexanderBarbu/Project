@@ -1,64 +1,35 @@
+import Utility.Logger;
+
 import java.util.Scanner;
 
-import Model.Hotel;
-import Network.Client;
-import Network.Message;
-import Network.MessageBuilder;
-import Network.NetUtil;
-import Utility.StringHasher;
-import Utility.DateRange;
-import java.util.*;
-
-import java.net.*;
-import java.time.LocalDateTime;
-
-class AppClientTest extends Client {
-
-    private String username = null;
-
-    public AppClientTest(String username, String password) {
-        this.username = username;
-
-        System.out.println("Connecting...");
-        connect(NetUtil.getServerIp(), NetUtil.getMasterAppPort(), WaitMode.WAIT_UNTIL_CONNECTS);
-
-        System.out.println("Requesting login...");
-
-        MessageBuilder mb = new MessageBuilder();
-        mb.setFunctionID(Message.REQUEST_LOGIN);
-        mb.addParam(username);
-        mb.addParam(StringHasher.Hash(password));
-
-        mb.setCallback((Socket socket, Message response) -> {
-            int functionid = response.getFunctionId();
-            if (functionid == Message.LOGIN_ACCEPTED) {
-                System.out.println("Login success, pinging...");
-                String authToken = response.getParams()[0];
-
-                MessageBuilder builder = new MessageBuilder();
-                builder.setFunctionID(Message.PING);
-                builder.addParam(username);
-                builder.addParam(authToken);
-                builder.setCallback((s, r) -> {
-                    if (r.getFunctionId() == Message.PING) {
-                        System.out.println("Server says: " + r.getParams()[0]);
-                    }
-                });
-                sendToServer(builder.get());
-            } else if (functionid == Message.LOGIN_REJECTED) {
-                System.out.println("Login failed: " + response.getParams()[0]);
-            }
-        });
-
-        sendToServer(mb.get());
-    }
-
-}
+import Components.AppClient;
+import Components.Master;
+import Components.Reducer;
+import Components.Worker;
 
 class Test
 {
+    public static Logger logger = new Logger("Test");
+
+    public static void startupServers() {
+        logger.write("Creating master...");
+        Master master = new Master();
+        logger.write("Master created.");
+        logger.write("Creating reducer");
+        Reducer reducer = new Reducer();
+        logger.write("Reducer created.");
+        logger.write("Creating workers...");
+        for (int i = 0; i < 5; ++i) {
+            Worker worker = new Worker(i);
+            if (i == 0) {
+                worker.scheduleDeath(10);
+            }
+        }
+    }
+
     public static void main(String args[])
     {
+        /* 
         Hotel hotel = new Hotel("MyHotel", 5, 100, "1234", "3214");
         System.out.println(hotel.toString());
         Hotel hotelReplica = new Hotel(hotel.toString());
@@ -89,20 +60,36 @@ class Test
         System.out.println(filter.getNumberOfPeople());
         System.out.println(filter.getPriceRange().getFrom() + " to " + filter.getPriceRange().getTo());
         System.out.println(filter.getStars());
-
-        Master master = new Master();
-
+        */
+        
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Username: ");
-        String username = scanner.nextLine();
+        try {
+            startupServers();
 
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
+            AppClient appClientTest = new AppClient();
 
-        scanner.close();
+            System.out.print("Username: ");
+            String username = scanner.nextLine();
+            System.out.print("Password: ");
+            String password = scanner.nextLine();
+            
+            if (appClientTest.login(username, password)) {
+                logger.write("Logged in");
+                appClientTest.testMapReduce();
+            } else {
+                logger.write("Wrong credentials");
+            }
+        } catch (Exception e) {
+            
+        } finally {
+            try {
+                scanner.close();
+            } catch (Exception e) {
 
-        AppClientTest appClientTest = new AppClientTest(username, password);
+            }
+        }
+
 
         while (true) {}
     }
