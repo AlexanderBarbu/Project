@@ -9,8 +9,8 @@ public class Hotel {
 
     public String Name;
 
-    public int Rating;
-    public int NoReviews;
+    public int Rating = 0;
+    public int NoReviews = 0;
     public boolean IsFull;
 
     private int _noRooms;
@@ -20,17 +20,14 @@ public class Hotel {
     private Map<String, Room> _rooms = new HashMap<>();
     
 
-    public Hotel(String Name, int R, int NR, String Aid, String MID) {
+    public Hotel(String Name, String Aid, String MID) {
         this.Name       = Name;
-        this.Rating     = R;
-        this.NoReviews  = NR;
         this._areaID    = Aid;
-        this._managerID = MID;
         IsFull = false;
     }
 
     // When passing hotel data through messages, the string will
-    // be something like 'name=Hotel;rating=3;areaID=342' etc
+    // be something like 'name=Hotel;rating=3;areaID=342' etc.
     // so we want to be able to initialize a hotel object using this string.
     // This is basically the inverse of .toString()
     public Hotel(String data) {
@@ -50,7 +47,7 @@ public class Hotel {
                     this.NoReviews = Integer.parseInt(attributeValue);
                     break;
                 case "full":
-                    this.IsFull = (attributeValue.toLowerCase() == "true");
+                    this.IsFull = (attributeValue.equalsIgnoreCase("true"));
                     break;
                 case "area":
                     this._areaID = attributeValue;
@@ -108,6 +105,13 @@ public class Hotel {
         }
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
+    }
+
+    public void setMID(String ID){
+        for (Room room : _rooms.values()){
+            room.set_managerID(ID);
+            _managerID = ID;
+        }
     }
 
 }//Hotel
