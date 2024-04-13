@@ -10,27 +10,23 @@ public class Room {
     
     public String Name; //KEY
 
-    public int Rating;
-    public int NoReviews;
+    public int Rating = 0;
+    public int NoReviews = 0;
     public boolean IsFull;
 
     protected List<Reservation> reservations = new ArrayList<>(); // all reservations of this room
-    protected boolean[][] availabilityPreview = new boolean[12][31]; // the idea we talked about the other day
 
     private int _capacity;
-    private String _areaID;
+    private final String _areaID;
     private String _imgPath;
     private String _managerID;
 
-    public Room(String Name, int R, int NR, int Cap, String Aid, String path, String MID) {
+    public Room(String Name, int Cap, String Aid, String path) {
 
         this.Name       = Name;
-        this.Rating     = R;
-        this.NoReviews  = NR;
         this._capacity  = Cap;
         this._areaID    = Aid;
         this._imgPath   = path;
-        this._managerID = MID;
         IsFull = false;
     }
 
@@ -45,6 +41,7 @@ public class Room {
 
     public void setCapacity(int cap) { _capacity = cap;}
 
+    public void set_managerID(String ID){ _managerID = ID; }
 //----------------------------------------------------------- 
 
     public boolean checkAvailability(LocalDateTime start, LocalDateTime end){
@@ -53,16 +50,22 @@ public class Room {
         int endday = end.getDayOfMonth();
         int endmonth = end.getMonthValue();
 
-        for(int j = startmonth; j<= endmonth; startmonth++){
-            for (int i=startday; i <= endday; i++){
+        if (reservations.isEmpty()){
+            return true;
+        }
 
-                if(availabilityPreview[j][i]){
-                    return false;
-                }
-                //Complexity is O(n^2 on paper but on worst case if endmonth > startmonth which is unlikely)
+        for (Reservation r : reservations) {
+
+            int reservationstartmonth = r.StartDate.getMonthValue();
+            int reservationstartday = r.StartDate.getDayOfMonth();
+            int reservationendmonth = r.EndDate.getMonthValue();
+            int reservationendday = r.EndDate.getMonthValue();
+
+            if (reservationstartmonth == startmonth && reservationstartday >= startday
+                    && reservationstartday < endday) {
+                return false;
             }
-        }//for 1
-
+        }
         return true;
     }
 
