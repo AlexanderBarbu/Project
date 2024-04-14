@@ -1,5 +1,7 @@
 package Model;
 
+import Utility.PriceRange;
+
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -69,11 +71,16 @@ public class Hotel {
         return _rooms;
     }
 
-    public Room getAvailableRoom(int capacity , LocalDateTime startdate, LocalDateTime enddate){
+    public Room getAvailableRoom(int capacity , LocalDateTime startdate, LocalDateTime enddate, PriceRange range){
 
         for(Room room : _rooms.values()){
-            if(room.capacity() >= capacity){
-                continue;
+            if(!(room.capacity() >= capacity)){
+                return null;
+//                continue;
+            }
+            if (!(room.getPrice()<= range.getTo() && room.getPrice() >= range.getFrom())){
+                return null;
+
             }
             if(room.checkAvailability(startdate, enddate)){
                 IsFull = false;
@@ -114,4 +121,7 @@ public class Hotel {
         }
     }
 
+    public int getRating() {
+        return Rating;
+    }
 }//Hotel

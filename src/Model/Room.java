@@ -19,14 +19,16 @@ public class Room {
     private int _capacity;
     private final String _areaID;
     private String _imgPath;
+    private int price;
     private String _managerID;
 
-    public Room(String Name, int Cap, String Aid, String path) {
+    public Room(String Name, int Cap, String Aid, String path, int price) {
 
         this.Name       = Name;
         this._capacity  = Cap;
         this._areaID    = Aid;
         this._imgPath   = path;
+        this.price = price;
         IsFull = false;
     }
 
@@ -42,7 +44,7 @@ public class Room {
     public void setCapacity(int cap) { _capacity = cap;}
 
     public void set_managerID(String ID){ _managerID = ID; }
-//----------------------------------------------------------- 
+//-----------------------------------------------------------
 
     public boolean checkAvailability(LocalDateTime start, LocalDateTime end){
         int startday = start.getDayOfMonth();
@@ -78,5 +80,8 @@ public class Room {
         }
         
     }
-    
+
+    public int getPrice() {
+        return price;
+    }
 }// Room

@@ -8,6 +8,8 @@ public class HotelFilter {
     private ArrayList<DateRange> dates = new ArrayList<>();
     private PriceRange priceRange = null;
     private int stars = 0; // Default if not specified
+//    private StarsRange starsRange = null;
+
     private int noOfPeople = 1; // Default if not specified
 
     public HotelFilter() {}
@@ -48,6 +50,14 @@ public class HotelFilter {
                     break;
             }
         }
+    }
+
+    public HotelFilter(ArrayList<String> areas, ArrayList<DateRange> dates, PriceRange priceRange, int stars, int noOfPeople) {
+        this.areas = areas;
+        this.dates = dates;
+        this.priceRange = priceRange;
+        this.stars = stars;
+        this.noOfPeople = noOfPeople;
     }
 
     public void addArea(String area) {

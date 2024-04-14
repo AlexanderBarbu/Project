@@ -1,8 +1,12 @@
 package Components;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
+import Model.Hotel;
+import Model.Room;
 import Network.Client;
 import Network.Hybrid;
 import Network.Message;
@@ -10,15 +14,24 @@ import Network.MessageBuilder;
 import Network.NetUtil;
 import Network.Client.WaitMode;
 
+import Utility.DateRange;
+import Utility.HotelFilter;
 import Utility.Logger;
+import Utility.PriceRange;
 
 public class Worker extends Hybrid {
 
+    public Worker() {
+    }
+
     /**
-     * 
+     *
      */
-    private class WorkerClient extends Client {}
-    private class ReducerClient extends Client {}
+    private class WorkerClient extends Client {
+    }
+
+    private class ReducerClient extends Client {
+    }
 
     private int id;
     private ReducerClient reducerClient = new ReducerClient();
@@ -63,8 +76,8 @@ public class Worker extends Hybrid {
 
     /**
      * Establishes a connection with the given worker and replicates its data
-     * 
-     * @param leader 
+     *
+     * @param leader
      * @see WorkerClient
      */
     public void followWorker(Worker leader) {
@@ -102,23 +115,12 @@ public class Worker extends Hybrid {
         broadcast(message);
     }
 
-    /**
-     * Called when the worker receives a message from the Master
-     * 
-     * @param data Data to be sent
-     */
     @Override
     protected void onReceiveMessageFromServer(Message message) {
         logger.write("Received message from master");
         processMessageFromServer(NetUtil.getMasterWorkerPort(), message);
     }
 
-    /**
-     * Sends a data to either the master or one of the connected workers
-     * 
-     * @param port Port of the server, identifying the destination server
-     * @param data Data to be sent
-     */
     private void sendToServer(int port, Message message) {
         if (port == NetUtil.getMasterWorkerPort()) {
             sendToServer(message);
@@ -129,9 +131,84 @@ public class Worker extends Hybrid {
 
     public void scheduleDeath(int millliseconds) {
         Thread thread = new Thread(() -> {
-            try { Thread.sleep(millliseconds); } catch (InterruptedException ie) {}
+            try {
+                Thread.sleep(millliseconds);
+            } catch (InterruptedException ie) {
+            }
             this.disconnectFromServer();
         });
         thread.start();
     }
+
+    //------------------------------------returns only Hotels------------------------------------
+
+
+    //    static List<Hotel> filterHotels(List<Hotel> hotels, HotelFilter filter) {
+//            return hotels.stream()
+//                    .filter(hotel -> hotelMatchesCriteria(hotel, filter))
+//                    .collect(Collectors.toList());
+//    }
+    private static boolean hotelMatchesCriteria(Hotel hotel, HotelFilter filter) {
+        if (!filter.getAreas().contains(hotel._areaID) || hotel.getRating() != filter.getStars()) {
+            return false;
+        } else {
+            LocalDateTime startDate = filter.getDates().get(0).getFrom();
+            LocalDateTime endDate = filter.getDates().get(0).getFrom();
+            return hotel.getAvailableRoom(filter.getNumberOfPeople(), startDate, endDate, filter.getPriceRange()) != null;
+        }
+    }
+
+    //------------------------------------returns Hotels + Rooms------------------------------------
+
+    List<Tuple2<Hotel, List<Room>>> filterHotels(List<Hotel> hotels, HotelFilter filter) {
+        return hotels.stream()
+                .filter(hotel -> hotelMatchesCriteria(hotel, filter))
+                .map(hotel -> new Tuple2<>(hotel, filterRooms(hotel, filter)))
+                .collect(Collectors.toList());
+    }
+
+
+    private static List<Room> filterRooms(Hotel hotel, HotelFilter filter) {
+        List<LocalDateTime> newDates = convertDates(filter.getDates());
+        int lowerPrice = filter.getPriceRange().getFrom();
+        int upperPrice = filter.getPriceRange().getTo();
+
+        return hotel.getRooms().values().stream()
+                .filter(room -> room.checkAvailability(newDates.get(0), newDates.get(1)))
+                .filter(room -> lowerPrice <= room.getPrice() && room.getPrice() <= upperPrice)
+                .filter(room -> room.capacity() >= filter.getNumberOfPeople())
+                .toList();
+    }
+
+
+    public static ArrayList<LocalDateTime> convertDates(ArrayList<DateRange> availableDates) {
+        ArrayList<LocalDateTime> result = new ArrayList<>();
+        result.add(availableDates.get(0).getFrom());
+        result.add(availableDates.get(0).getTo());
+        return result;
+    }
+
+    class Tuple2<K, V> {
+        private K first;
+        private V second;
+
+        public Tuple2(K first, V second) {
+            this.first = first;
+            this.second = second;
+        }
+
+        public K getFirst() {
+            return first;
+        }
+
+        public V getSecond() {
+            return second;
+        }
+
+        @Override
+        public String toString() {
+            return first.toString() + second.toString();
+        }
+    }
+
 }

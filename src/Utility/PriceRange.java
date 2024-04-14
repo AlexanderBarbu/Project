@@ -17,6 +17,14 @@ public class PriceRange {
         this.from = from;
         this.to = to;
     }
+    public PriceRange(int price) {
+        this(price, 1000);
+        if (price > to) {
+            to = price;
+        } else {
+            from = price;
+        }
+    }
 
     public int getFrom() {
         return this.from;

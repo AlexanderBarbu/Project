@@ -3,6 +3,8 @@ package DAO;
 import DAO.HotelmDAO;
 import DAO.UsermDAO;
 
+//package DAO;
+
 public class mDAOinit {
     
     private UsermDAO UserDAO;
