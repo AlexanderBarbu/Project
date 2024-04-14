@@ -29,6 +29,9 @@ public class PriceRange {
     public int getFrom() {
         return this.from;
     }
+    public static PriceRange Any() {
+        return new PriceRange(0, 2147483647);
+    }
 
     public int getTo() {
         return this.to;

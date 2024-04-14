@@ -153,7 +153,7 @@ public class Worker extends Hybrid {
             return false;
         } else {
             LocalDateTime startDate = filter.getDates().get(0).getFrom();
-            LocalDateTime endDate = filter.getDates().get(0).getFrom();
+            LocalDateTime endDate = filter.getDates().get(0).getTo();
             return hotel.getAvailableRoom(filter.getNumberOfPeople(), startDate, endDate, filter.getPriceRange()) != null;
         }
     }

@@ -74,12 +74,11 @@ public class Hotel {
     public Room getAvailableRoom(int capacity , LocalDateTime startdate, LocalDateTime enddate, PriceRange range){
 
         for(Room room : _rooms.values()){
-            if(!(room.capacity() >= capacity)){
-                return null;
-//                continue;
+            if(room.capacity() < capacity){
+                continue;
             }
             if (!(room.getPrice()<= range.getTo() && room.getPrice() >= range.getFrom())){
-                return null;
+                continue;
 
             }
             if(room.checkAvailability(startdate, enddate)){
