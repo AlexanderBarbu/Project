@@ -1,0 +1,9 @@
+{
+    "roomName": "Miami Room",
+    "hotelName": "Miami Hotel",
+    "noOfReviews": 4,
+    "image": "images/miamiRoom.png",
+    "capacity": 5,
+    "rating": 3,
+    "price": 249.99
+}

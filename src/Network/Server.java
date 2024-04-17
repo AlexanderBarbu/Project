@@ -11,6 +11,7 @@ public class Server {
     
     private ServerSocket serverSocket = null;
     private Router router = null;
+    private Logger logger = new Logger("Server");
 
     private Map<Integer, MessageCallback> callback = new ConcurrentHashMap<>();
 
@@ -78,6 +79,8 @@ public class Server {
                 onClientConnected(incomingConnectionSocket);
                 router.linkDestination(incomingConnectionSocket);
 
+                logger.write("Client connected");
+
                 Thread clientReceiverThread = new Thread(() -> handleConnection(incomingConnectionSocket));
                 clientReceiverThread.start();
             } catch (IOException e) {
@@ -123,7 +126,6 @@ public class Server {
      */
     public void send(int clientIndex, Message message) {
         saveCallback(message);
-        Logger logger = new Logger("Server");
         logger.write("Sending " + message.toString());
         router.send(clientIndex, message);
     }
@@ -136,7 +138,6 @@ public class Server {
      */
     public void send(Socket target, Message message) {
         saveCallback(message);
-        Logger logger = new Logger("Server");
         logger.write("Sending " + message.toString());
         router.send(target, message);
     }
@@ -165,7 +166,7 @@ public class Server {
         }
     }
 
-    protected Router GetRouter() {
+    public Router GetRouter() {
         return this.router;
     }
 }

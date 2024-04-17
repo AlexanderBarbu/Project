@@ -5,6 +5,8 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import Utility.Logger;
+
 /**
  * Intermediate stage for sending messages to sockets.
  * Can be used by servers in cooperation with a routing policy in order
@@ -34,6 +36,8 @@ public class Router {
     private Map<Socket, Boolean> isConnected = new ConcurrentHashMap<>();
     private List<Socket> linkedSockets = new ArrayList<>();
     private IRoutingPolicy routingPolicy = new DefaultRoutingPolicy();
+
+    private Logger logger = new Logger("Router");
 
     public void setRoutingPolicy(IRoutingPolicy routingPolicy) {
         if (routingPolicy != null) {
@@ -90,6 +94,7 @@ public class Router {
      * @param data
      */
     public void broadcast(Message message) {
+        logger.write("Broadcasting: " + message.toString());
         for (int i = 0; i < linkedSockets.size(); ++i) {
             send(linkedSockets.get(i), createMessageWithId(message, i));
         }
@@ -186,6 +191,7 @@ public class Router {
                 // Since the socket is connected and 'this' is disconnected
                 // we don't need to check if they're the same
                 if (isSocketConnected(altSocket)) {
+                    logger.write("REROUTING TO " + i);
                     return altSocket;
                 }
             }

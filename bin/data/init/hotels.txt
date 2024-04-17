@@ -1,0 +1,5 @@
+bin/data/hotels/hotel-1.json
+bin/data/hotels/hotel-2.json
+bin/data/hotels/hotel-3.json
+bin/data/hotels/hotel-4.json
+bin/data/hotels/hotel-5.json

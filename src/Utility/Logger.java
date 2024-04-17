@@ -12,7 +12,7 @@ public class Logger {
         }
     }
 
-    public void write(String message) {
-        System.out.println("[" + id + "] " + message);
+    public synchronized void write(String message) {
+        //System.out.println("[" + id + "] " + message);
     }
 }

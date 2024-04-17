@@ -17,6 +17,17 @@ public class DateRange {
         this.to = to;
     }
 
+    public DateRange(String data) {
+        String[] parts = data.split(";");
+        this.from = LocalDateTime.parse(parts[0]);
+        this.to = LocalDateTime.parse(parts[1]);
+    }
+
+    @Override
+    public String toString() {
+        return from.toString() + ";" + to.toString();
+    }
+
     public LocalDateTime getFrom() {
         return this.from;
     }
@@ -25,4 +36,20 @@ public class DateRange {
         return this.to;
     }
 
+    public boolean intersects(DateRange dr) {
+        return !(this.getTo().isBefore(dr.getFrom()) || dr.getTo().isBefore(this.getFrom()));
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == this) {
+            return true;
+        } else if (object == null) {
+            return false;
+        } else if (this.getClass() != object.getClass()) {
+            return false;
+        }
+        DateRange other = (DateRange)object;
+        return other.from.equals(this.from) && other.to.equals(this.to);
+    }
 }

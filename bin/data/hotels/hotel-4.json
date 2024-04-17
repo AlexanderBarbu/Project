@@ -1,0 +1,10 @@
+{
+    "name": "One Room Hotel",
+    "area": "Athens",
+    "stars": 1,
+    "noOfReviews": 1,
+    "image": "/images/single-hotel.png",
+    "managerId": "Default",
+    "rating": 1,
+    "noOfRooms": 1
+}

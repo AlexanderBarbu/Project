@@ -1,0 +1,9 @@
+{
+    "roomName": "Another Miami Room",
+    "hotelName": "Another Miami Hotel",
+    "noOfReviews": 42,
+    "image": "images/anotherMiamiRoom.png",
+    "capacity": 3,
+    "rating": 4,
+    "price": 12.45
+}

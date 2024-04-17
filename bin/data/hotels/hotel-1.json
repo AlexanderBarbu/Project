@@ -1,0 +1,10 @@
+{
+    "name": "Miami Hotel",
+    "area": "Miami",
+    "stars": 3,
+    "noOfReviews": 15,
+    "image": "/images/miami-hotel.png",
+    "managerId": "Default",
+    "rating": 4.3,
+    "noOfRooms": 15
+}

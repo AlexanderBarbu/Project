@@ -1,0 +1,5 @@
+bin/data/reservations/reservation-1.txt
+bin/data/reservations/reservation-2.txt
+bin/data/reservations/reservation-3.txt
+bin/data/reservations/reservation-4.txt
+bin/data/reservations/reservation-5.txt

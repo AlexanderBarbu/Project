@@ -39,6 +39,16 @@ public class Message {
     public static final int INIT_REDUCTION = 10;
     public static final int READY_FOR_REDUCTION = 11;
     public static final int TEST_REDUCTION = 12;
+    public static final int SAVE_HOTEL = 13;
+    public static final int COPY_HOTEL = 14;
+    public static final int SAVE_ROOM = 15;
+    public static final int COPY_ROOM = 16;
+    public static final int RESERVE_ROOM = 17;
+    public static final int COPY_RESERVATION = 18;
+    public static final int GET_OWNED_HOTELS = 19;
+    public static final int FILTER_HOTELS = 20;
+    public static final int GET_RESERVATIONS_PER_AREA = 21;
+    public static final int ADD_DATES = 22;
 
     public static final int INVALID_ID = -1;
     

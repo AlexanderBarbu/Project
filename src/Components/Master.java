@@ -2,6 +2,9 @@ package Components;
 import java.net.*;
 
 import Authentication.Authenticator;
+import Model.Hotel;
+import Model.Room;
+import Network.DynamicRoutingPolicy;
 import Network.Message;
 import Network.MessageBuilder;
 import Network.NetUtil;
@@ -33,26 +36,28 @@ public class Master {
          * @param message The message
          */
         private void handleInitialMessage(Socket socket, Message message) {
-            final int funcId = message.getFunctionId();
-            if (funcId == Message.REQUEST_LOGIN) {
-                logger.write("Received login request");
-                handleLoginRequest(socket, message);
-            } else if (funcId == Message.REQUEST_REGISTRATION) {
-                logger.write("Received registration request");
-            } else {
-                String[] params = message.getParams();
-                // Requests sent to the Master from the App must include a username
-                // and the authentication token, in order to ensure that the user
-                // has access to the requested service
-                if (params.length < 2) {
-                    sendInvalidParameterMessage(socket, message.getRequestId());
-                } else {
-                    if (Authenticator.validateToken(params[0], params[1])) {
-                        handleRequest(socket, message);
+            switch (message.getFunctionId()) {
+                case Message.REQUEST_LOGIN:
+                    logger.write("Received login request");
+                    handleLoginRequest(socket, message);
+                    break;
+                case Message.REQUEST_REGISTRATION:
+                    logger.write("Received registration request");
+                    break;
+                default:
+                    String[] params = message.getParams();
+                    // Requests sent to the Master from the App must include a username
+                    // and the authentication token, in order to ensure that the user
+                    // has access to the requested service
+                    if (params.length < 2) {
+                        sendInvalidParameterMessage(socket, message.getRequestId());
                     } else {
-                        send(socket, new Message(message.getRequestId(), Message.INVALID_TOKEN, null));
+                        if (Authenticator.validateToken(params[0], params[1])) {
+                            handleRequest(socket, message);
+                        } else {
+                            send(socket, new Message(message.getRequestId(), Message.INVALID_TOKEN, null));
+                        }
                     }
-                }
             }
         }
 
@@ -66,20 +71,16 @@ public class Master {
          */
         private void handleLoginRequest(Socket socket, Message message) {
             String[] params = message.getParams();
-            if (params.length != 2) {
-                sendInvalidParameterMessage(socket, message.getRequestId());
+            String authToken = Authenticator.authenticate(params[0], params[1]);
+            if (authToken.isEmpty()) {
+                sendLoginRejectedMessage(socket, message.getRequestId());
             } else {
-                String authToken = Authenticator.authenticate(params[0], params[1]);
-                if (authToken.isEmpty()) {
-                    sendLoginRejectedMessage(socket, message.getRequestId());
-                } else {
-                    Message loginSuccessMsg = new Message(
-                        message.getRequestId(),
-                        Message.LOGIN_ACCEPTED,
-                        authToken
-                    );
-                    send(socket, loginSuccessMsg);
-                }
+                Message loginSuccessMsg = new Message(
+                    message.getRequestId(),
+                    Message.LOGIN_ACCEPTED,
+                    authToken
+                );
+                send(socket, loginSuccessMsg);
             }
         }
 
@@ -112,7 +113,31 @@ public class Master {
 
         private void handleRequest(Socket socket, Message message) {
             logger.write("Handling request...");
-            Master.this.initMapReduceProcess(socket, message.getFunctionId(), message.getRequestId());
+            logger.write(message.toString());
+            switch (message.getFunctionId()) {
+                case Message.SAVE_HOTEL:
+                    saveHotel(message);
+                    break;
+                case Message.SAVE_ROOM:
+                    saveRoom(message);
+                    break;
+                case Message.ADD_DATES:
+                    addReservationDates(message);
+                    break;
+                case Message.RESERVE_ROOM:
+                    reserveRoom(message);
+                    break;
+                case Message.GET_OWNED_HOTELS:
+                    initMapReduceProcess(socket, Message.GET_OWNED_HOTELS, message.getRequestId(), null);
+                    break;
+                case Message.FILTER_HOTELS:
+                    initMapReduceProcess(socket, Message.FILTER_HOTELS, message.getRequestId(), new String[] { message.getParams()[2] } );
+                    break;
+
+                case Message.GET_RESERVATIONS_PER_AREA:
+                    initMapReduceProcess(socket, Message.GET_RESERVATIONS_PER_AREA, message.getRequestId(), new String[] { message.getParams()[2] });
+                    break;
+            }
         }
 
     }
@@ -126,11 +151,12 @@ public class Master {
 
     public Master() {
         clientServer.start(NetUtil.getMasterAppPort());
-        workerServer.start(NetUtil.getMasterWorkerPort());        
+        workerServer.start(NetUtil.getMasterWorkerPort());  
+        workerServer.GetRouter().setRoutingPolicy(new DynamicRoutingPolicy());      
         reducerServer.start(NetUtil.getMasterReducerPort());
     }
 
-    private void initMapReduceProcess(Socket client, int functionId, int requestId) {
+    private void initMapReduceProcess(Socket client, int functionId, int requestId, String[] args) {
         MessageBuilder mb = new MessageBuilder();
         // We'll let the server know that we're going to
         // start a map reduce process
@@ -146,6 +172,12 @@ public class Master {
             mb2.setFunctionID(functionId);
             mb2.setRequestId(message.getRequestId());
             mb2.setCallback((s, r) -> returnMapReduceResults(client, r));
+            
+            if (args != null) {
+                for (String arg : args) {
+                    mb2.addParam(arg);
+                }
+            }
 
             Message reductionMsg = mb2.get();
             // The message is sent through the worker server,
@@ -174,5 +206,49 @@ public class Master {
     private void returnMapReduceResults(Socket client, Message response) {
         logger.write("Returning data to client");
         clientServer.send(client, response);
+    }
+
+    private void saveHotel(Message message) {
+        int connections = workerServer.getNumberOfConnections();
+        if (connections > 0) {
+            String[] params = message.getParams();
+            Hotel hotel = new Hotel(params[2]);
+
+            int index = Math.abs(hotel.Name.hashCode()) % connections;
+            workerServer.send(index, message);
+        }
+    }
+
+    private void saveRoom(Message message) {
+        int connections = workerServer.getNumberOfConnections();
+        if (connections > 0) {
+            String[] params = message.getParams();
+            Room room = new Room(params[2]);
+
+            int index = Math.abs(room.getHotelName().hashCode()) % connections;
+            workerServer.send(index, message);
+        }
+    }
+
+    private void reserveRoom(Message message) {
+        int connections = workerServer.getNumberOfConnections();
+        if (connections > 0) {
+            String hotelName = message.getParams()[2];
+
+            int index = Math.abs(hotelName.hashCode()) % connections;
+            logger.write("Index=" + index);
+            workerServer.send(index, message);
+        }
+    }
+
+    private void addReservationDates(Message message) {
+        int connections = workerServer.getNumberOfConnections();
+        if (connections > 0) {
+            String hotelName = message.getParams()[2];
+
+            int index = Math.abs(hotelName.hashCode()) % connections;
+            logger.write("Index=" + index);
+            workerServer.send(index, message);
+        }
     }
 }

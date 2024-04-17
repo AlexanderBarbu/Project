@@ -2,21 +2,22 @@ package Utility;
 
 public class PriceRange {
     
-    private int from = 0;
-    private int to = 0;
+    private float from = 0;
+    private float to = 0;
 
-    public PriceRange(int from, int to) {
+    public PriceRange(float from, float to) {
         // Prevent negative values
         from = Math.max(0, from);
         to = Math.max(0, to);
         if (from > to) {
-            int temp = from;
+            float temp = from;
             from = to;
             to = temp;
         }
         this.from = from;
         this.to = to;
     }
+
     public PriceRange(int price) {
         this(price, 1000);
         if (price > to) {
@@ -26,15 +27,24 @@ public class PriceRange {
         }
     }
 
-    public int getFrom() {
+    public float getFrom() {
         return this.from;
     }
-    public static PriceRange Any() {
-        return new PriceRange(0, 2147483647);
+
+    public void setFrom(float from) {
+        this.from = from;
     }
 
-    public int getTo() {
+    public float getTo() {
         return this.to;
+    }
+
+    public void setTo(float to) {
+        this.to = to;
+    }
+
+    public static PriceRange Any() {
+        return new PriceRange(0, 2147483647);
     }
 
 }

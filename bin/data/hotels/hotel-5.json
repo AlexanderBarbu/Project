@@ -1,0 +1,10 @@
+{
+    "name": "Programmer Hotel",
+    "area": "Utopia",
+    "stars": 4,
+    "noOfReviews": 212037,
+    "image": "/images/aueb-hotel.png",
+    "managerId": "Default",
+    "rating": 3.14,
+    "noOfRooms": 23
+}

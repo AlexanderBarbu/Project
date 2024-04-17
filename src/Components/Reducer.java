@@ -29,6 +29,7 @@ public class Reducer extends Hybrid {
          */
         public synchronized boolean decreaseWorkersRemaining() {
             --workersLeft;
+            logger.write("WORKERS LEFT: " + workersLeft);
             // It may not make sense to return this, but it's
             // needed so we can avoid a race condition
             return workersLeft > 0;
@@ -107,9 +108,15 @@ public class Reducer extends Hybrid {
     protected void onReceiveMessageFromClient(Socket socket, Message message) {
         switch (message.getFunctionId()) {
             case Message.TEST_REDUCTION:
+            case Message.GET_OWNED_HOTELS:
+            case Message.FILTER_HOTELS:
+            case Message.GET_RESERVATIONS_PER_AREA:
+                logger.write("Got mapreduce message");
                 int reqId = message.getRequestId();
                 if (reductionData.containsKey(reqId)) {
                     handleReductionRequest(reqId, message.getParams());
+                } else {
+                    logger.write("ReqID not found in reduction data");
                 }
                 break;
         }
@@ -142,11 +149,23 @@ public class Reducer extends Hybrid {
         ReductionData rd = reductionData.get(requestId);
         // Reducing the data
         for (String param : params) {
-            String[] parts = param.split(":");
+            String[] parts = new String[2];
+            int lastColonIndex = param.lastIndexOf(":");
+            logger.write("param=" + param);
+            parts[0] = param.substring(0, lastColonIndex);
+            parts[1] = param.substring(lastColonIndex + 1, param.length());
+            //logger.write(param);
+            //logger.write("parts[0]=" + parts[0]);
+            //logger.write("parts[1]=" + parts[1]);
+            //logger.write("--------");
             rd.increase(parts[0], Integer.parseInt(parts[1]));
         }
         // Responding to the server if there are no more workers left
         if (!rd.decreaseWorkersRemaining()) {
+            if (rd.values.containsKey("null") && rd.values.size() > 1) {
+                rd.values.remove("null");
+            }
+
             MessageBuilder mb = new MessageBuilder();
             mb.setRequestId(requestId);
             addReducedDataToMessage(rd, mb);

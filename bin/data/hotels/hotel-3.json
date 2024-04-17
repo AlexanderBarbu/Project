@@ -1,0 +1,10 @@
+{
+    "name": "AUEB Hotel",
+    "area": "Athens",
+    "stars": 5,
+    "noOfReviews": 123456,
+    "image": "/images/aueb-hotel.png",
+    "managerId": "Default",
+    "rating": 5,
+    "noOfRooms": 50
+}

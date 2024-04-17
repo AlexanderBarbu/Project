@@ -1,0 +1,9 @@
+{
+    "roomName": "Miami Room 2",
+    "hotelName": "Miami Hotel",
+    "noOfReviews": 342,
+    "image": "images/miamiRoom2.png",
+    "capacity": 4,
+    "rating": 3.2,
+    "price": 43.99
+}

@@ -7,7 +7,7 @@ import Model.Hotel;
 
 public class HotelmDAO implements HotelDAO {
     
-    protected static ArrayList<Hotel> hotels = new ArrayList<>();
+    protected ArrayList<Hotel> hotels = new ArrayList<>();
 
     @Override
     public Hotel find(String Name){

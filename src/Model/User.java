@@ -10,16 +10,27 @@ import java.util.Map;
 
 public class User {
 
-    public String UID;
-
-    public int Name;
-    public int Surname;
-    public boolean isManager;
+    public String Name = "";
+    public String Surname = "";
+    public boolean isManager = false;
 
     private String _managerID = "-1";
     private Map<String, Reservation> _reservations = new HashMap<>();
     private Map<String, Hotel> _hotels = new HashMap<>();
     private int reservations = 0;
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        } else if (object == this) {
+            return true;
+        } else if (getClass() != object.getClass()) {
+            return false;
+        }
+        User other = (User)object;
+        return other.Name == this.Name;
+    }
 
     public String managerID() {
         return _managerID;
@@ -58,8 +69,8 @@ public class User {
         boolean availability = room != null;
 
         if (availability) {
-            String RID = reservations + "R" + UID;
-            room.addReservation(new Reservation(RID, start, end));
+            //String RID = reservations + "R" + UID;
+            //room.addReservation(new Reservation(RID, start, end));
         }
         return availability;
     }

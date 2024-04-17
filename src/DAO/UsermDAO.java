@@ -11,7 +11,7 @@ public class UsermDAO implements UserDAO{
     public User find(String ID) {
 
         for(User current : users) {
-            if(current.UID.equals(ID)) {
+            if(current.Name.equals(ID)) {
                 return current;
             }
         }

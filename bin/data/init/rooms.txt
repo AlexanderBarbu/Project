@@ -1,0 +1,8 @@
+bin/data/rooms/room-1.json
+bin/data/rooms/room-2.json
+bin/data/rooms/room-3.json
+bin/data/rooms/room-4.json
+bin/data/rooms/room-5.json
+bin/data/rooms/room-6.json
+bin/data/rooms/room-7.json
+bin/data/rooms/room-8.json

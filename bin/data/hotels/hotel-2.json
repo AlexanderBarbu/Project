@@ -1,0 +1,10 @@
+{
+    "name": "Another Miami Hotel",
+    "area": "Miami",
+    "stars": 2,
+    "noOfReviews": 1520,
+    "image": "/images/another-miami-hotel.png",
+    "managerId": "Default",
+    "rating": 3.9,
+    "noOfRooms": 50
+}
